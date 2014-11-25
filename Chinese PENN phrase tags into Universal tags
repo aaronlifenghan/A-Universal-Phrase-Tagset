@@ -1,0 +1,284 @@
+#!/usr/bin/perl -w  
+#############################################################################################################################################################################################################
+##    For a detailed description of this evaluation metric and source code, please read:                                                                                                                #####
+##    This code is to convert the Chinese PENN phrase tags (by Berkeley parser) into universal phrase tags.                                                                                             #####
+##    Universal phrase tagset is proposed by Aaron Li-Feng Han, Derek F. Wong, Lidia S. Chao, Liangye He, Shuo Li, and Ling Zhu in University of Macau                                                  #####
+##    This perl code is  written by Aaron Li-Feng Han in university of macau, 2013                                                                                                                      #####
+##    All Copyright (c) reserved by the authors. Corresponding author: Aaron Li-Feng Han < hanlifengaaron AT gmail DOC com >                                                                            #####
+##    Please cite paper below if you use the universal phrase tagset or or the mapping work in your research                                                                                            #####
+##    "Phrase Tagset Mapping for French and English Treebanks and Its Application in Machine Translation Evaluation". 2013. Aaron Li-Feng Han, Derek F. Wong, Lidia S. Chao, Liangye He, Shuo Li,       #####
+##    and Ling Zhu. Proceedings of the GSCL 2013, 23rd-27th September, Chinesey. LNCS Vol. 8105, pp. 119–131. Volume Editors: Iryna Gurevych, Chris Biemann and Torsten Zesch. Publisher: Springer.     #####
+##    Source code and detailed mapping works website: https://github.com/aaronlifenghan/A-Universal-Phrase-Tagset                                                                                       #####
+##    Online paper: http://www.springer.com/computer/database+management+%26+information+retrieval/book/978-3-642-40721-5                                                                               #####
+#############################################################################################################################################################################################################
+##    How to use this Perl code.                                                                                                                                                                        #####
+##    1. Put you original documents containing the Chinese phrase tags under the address in Line 20, 29, 31 of this Perl code.                                                                          #####
+##    2. The document containing converted universal phrase tags will be shown under the address in Line 32 of this Perl code.                                                                          #####
+##                                                                                                                                                                                                      #####
+#############################################################################################################################################################################################################
+
+## D:\down_papar_NLP\treebanks tagset\uploaded_code\test-program\chinese\document
+
+opendir (DIR, "D:\\down_papar_NLP\\treebanks tagset\\uploaded_code\\test-program\\chinese\\document") || die "can not open output file!"; ##Put you original documents containing the Chinese phrase tags under the address 
+
+@filename=readdir(DIR);
+
+closedir (DIR);
+
+foreach $file (@filename)
+  {
+
+                if(!(-d "D:\\down_papar_NLP\\treebanks tagset\\uploaded_code\\test-program\\chinese\\document\\$file")) ##Put you original documents containing the Chinese phrase tags under the address 
+                        {
+                                open (TEST,"<:encoding(utf8)","D:\\down_papar_NLP\\treebanks tagset\\uploaded_code\\test-program\\chinese\\document\\$file") || die "can not open file: $!";##Put you original documents containing the Chinese phrase tags under the address 
+                                ##open (RESULT,">:encoding(utf8)","D:\\down_papar_NLP\\treebanks tagset\\uploaded_code\\test-program\\chinese\\document\\Uni_ppos_$file.txt") || die "$!";##The document containing converted universal phrase tags will be shown under the address
+                                open (RESULT,">:encoding(utf8)","D:\\down_papar_NLP\\treebanks tagset\\uploaded_code\\test-program\\chinese\\document\\Uni\\$file") || die "$!";##The document containing converted universal phrase tags will be shown under the address
+                                
+                                #$i=0;
+                                $str0="";
+                                #@arry_1= ();
+                                #@arry_sys_length= ();
+                                #@arrytwo_sys_translation= ();
+                                #$sentence_num=0;
+                                while($str0=<TEST>)                       #### put the system translation into a two dimension array @arrytwo_sys_translation
+                                        {
+                                                #$str0 =~ s/\(CLP[-=\s]/\(NP[-=\s]/;
+												#$str0 =~ tr/\(CLP[-=\s]/\(UNP[-=\s]/;
+												
+												#$str0 =~ s/\(CLP-/\(UNP-/;
+												#$str0 =~ s/\(CLP=/\(UNP=/;
+												#$str0 =~ s/\(CLP\s/\(UNP\s/;
+												
+												$str0 =~ s/\(NP-/\(UNP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(NP=/\(UNP=/g;
+												$str0 =~ s/\(NP\s/\(UNP /g;
+												
+												$str0 =~ s/\(CLP-/\(UNP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(CLP=/\(UNP=/g;
+												$str0 =~ s/\(CLP\s/\(UNP /g;
+												
+												$str0 =~ s/\(QP-/\(UNP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(QP=/\(UNP=/g;
+												$str0 =~ s/\(QP\s/\(UNP /g;
+												
+												$str0 =~ s/\(LCP-/\(UNP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(LCP=/\(UNP=/g;
+												$str0 =~ s/\(LCP\s/\(UNP /g;
+												
+												$str0 =~ s/\(WHNP-/\(UNP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(WHNP=/\(UNP=/g;
+												$str0 =~ s/\(WHNP\s/\(UNP /g;
+												
+												$str0 =~ s/\(VP-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VP=/\(UVP=/g;
+												$str0 =~ s/\(VP\s/\(UVP /g;
+												
+												$str0 =~ s/\(VCD-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VCD=/\(UVP=/g;
+												$str0 =~ s/\(VCD\s/\(UVP /g;
+												
+												$str0 =~ s/\(VCP-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VCP=/\(UVP=/g;
+												$str0 =~ s/\(VCP\s/\(UVP /g;
+												
+												$str0 =~ s/\(VNV-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VNV=/\(UVP=/g;
+												$str0 =~ s/\(VNV\s/\(UVP /g;
+												
+												$str0 =~ s/\(VPT-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VPT=/\(UVP=/g;
+												$str0 =~ s/\(VPT\s/\(UVP /g;
+												
+												$str0 =~ s/\(VRD-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VRD=/\(UVP=/g;
+												$str0 =~ s/\(VRD\s/\(UVP /g;
+												
+												$str0 =~ s/\(VSB-/\(UVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(VSB=/\(UVP=/g;
+												$str0 =~ s/\(VSB\s/\(UVP /g;
+												
+												$str0 =~ s/\(ADJP-/\(UAJP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(ADJP=/\(UAJP=/g;
+												$str0 =~ s/\(ADJP\s/\(UAJP /g;
+												
+												$str0 =~ s/\(DP-/\(UAJP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(DP=/\(UAJP=/g;
+												$str0 =~ s/\(DP\s/\(UAJP /g;
+												
+												$str0 =~ s/\(DNP-/\(UAJP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(DNP=/\(UAJP=/g;
+												$str0 =~ s/\(DNP\s/\(UAJP /g;
+												
+												$str0 =~ s/\(ADVP-/\(UAVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(ADVP=/\(UAVP=/g;
+												$str0 =~ s/\(ADVP\s/\(UAVP /g;
+												
+												$str0 =~ s/\(DVP-/\(UAVP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(DVP=/\(UAVP=/g;
+												$str0 =~ s/\(DVP\s/\(UAVP /g;
+												
+												$str0 =~ s/\(PP-/\(UPP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(PP=/\(UPP=/g;
+												$str0 =~ s/\(PP\s/\(UPP /g;
+												
+												$str0 =~ s/\(IP-/\(US-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(IP=/\(US=/g;
+												$str0 =~ s/\(IP\s/\(US /g;
+												
+												$str0 =~ s/\(CP-/\(US-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(CP=/\(US=/g;
+												$str0 =~ s/\(CP\s/\(US /g;
+												
+												$str0 =~ s/\(PRN-/\(US-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(PRN=/\(US=/g;
+												$str0 =~ s/\(PRN\s/\(US /g;
+												
+												$str0 =~ s/\(FRAG-/\(US-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(FRAG=/\(US=/g;
+												$str0 =~ s/\(FRAG\s/\(US /g;
+												
+												$str0 =~ s/\(INC-/\(US-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(INC=/\(US=/g;
+												$str0 =~ s/\(INC\s/\(US /g;
+												
+												# $str0 =~ s/\(IP-/\(US-/g;    ## if there is no /g, it will replace only once
+												# $str0 =~ s/\(IP=/\(US=/g;
+												# $str0 =~ s/\(IP\s/\(US /g;
+												
+												$str0 =~ s/\(UCP-/\(UCOP-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(UCP=/\(UCOP=/g;
+												$str0 =~ s/\(UCP\s/\(UCOP /g;
+												
+												$str0 =~ s/\(LST-/\(UX-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(LST=/\(UX=/g;
+												$str0 =~ s/\(LST\s/\(UX /g;
+												
+												$str0 =~ s/\(FLR-/\(UX-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(FLR=/\(UX=/g;
+												$str0 =~ s/\(FLR\s/\(UX /g;
+												
+												$str0 =~ s/\(DFL-/\(UX-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(DFL=/\(UX=/g;
+												$str0 =~ s/\(DFL\s/\(UX /g;
+												
+												$str0 =~ s/\(INTJ-/\(UX-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(INTJ=/\(UX=/g;
+												$str0 =~ s/\(INTJ\s/\(UX /g;
+												
+												$str0 =~ s/\(URL-/\(UX-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(URL=/\(UX=/g;
+												$str0 =~ s/\(URL\s/\(UX /g;
+												
+												$str0 =~ s/\(X-/\(UX-/g;    ## if there is no /g, it will replace only once
+												$str0 =~ s/\(X=/\(UX=/g;
+												$str0 =~ s/\(X\s/\(UX /g;
+												
+												
+												print RESULT $str0;
+												
+												# chomp($str0);
+                                                # ## $str0= lc ($str0);   ### both reference and system output translation is turned into lowwer case
+                                                # @arry_1= split(/\s+/,$str0);
+                                                # $arry_sys_length[$i]=scalar(@arry_1);       #### @arry_sys_length store the lengths of every sentence(line) of the system translation.
+                                                # $i++;
+                                                # push @arrytwo_sys_translation, [@arry_1];
+                                                # @arry_1= ();
+                                        }
+#                                $sentence_num=$i;
+                                close TEST;
+                                        
+                                        
+                                # for($i=0;$i<$sentence_num;$i++)        #####  Change the original phrase tag into the universal type uning mappings  
+                                        # {
+                                                # for($j=0;$j<$arry_sys_length[$i];$j++)
+													# {
+														# # $arrytwo_sys_translation[$i][$j] =~ s/\(NP[-=\s]/\(NP/;
+														# # $arrytwo_sys_translation[$i][$j] =~ s/\(CLP[-=\s]/\(NP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ s/\(QP[-=\s]/\(NP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ s/\(LCP[-=\s]/\(NP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ s/\(WHNP[-=\s]/\(NP[-=\s]/;
+														
+														# if($arrytwo_sys_translation[$i][$j] =~ m/\(CLP[-=\s]/)
+														# {
+															# $arrytwo_sys_translation[$i][$j] =~ s/CLP/NP/;
+														# }
+														# # $arrytwo_sys_translation[$i][$j] =~ m/\(NP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ m/\(CLP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ m/\(QP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ m/\(LCP[-=\s]/;
+														# # $arrytwo_sys_translation[$i][$j] =~ m/\(WHNP[-=\s]/;
+														
+													# }
+												
+												
+                                                        # # {
+                                                                # # if($arrytwo_sys_translation[$i][$j] =~ m/\(NP[-=\s]/ ||$arrytwo_sys_translation[$i][$j] =~ m/\(CLP[-=\s]/||$arrytwo_sys_translation[$i][$j] eq QP||$arrytwo_sys_translation[$i][$j] eq LCP||$arrytwo_sys_translation[$i][$j] eq WHNP)
+                                                                # # #if(grep(/^$arrytwo_sys_translation[$i][$j]/, @record_label))
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=NP;
+                                                                        # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq VP||$arrytwo_sys_translation[$i][$j] eq VCD||$arrytwo_sys_translation[$i][$j] eq VCP||$arrytwo_sys_translation[$i][$j] eq VNV||$arrytwo_sys_translation[$i][$j] eq VPT||$arrytwo_sys_translation[$i][$j] eq VRD||$arrytwo_sys_translation[$i][$j] eq VSB)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=VP;
+                                                                        # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq ADJP||$arrytwo_sys_translation[$i][$j] eq DP||$arrytwo_sys_translation[$i][$j] eq DNP)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=AJP;
+                                                                        # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq ADVP||$arrytwo_sys_translation[$i][$j] eq DVP)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=AVP;
+                                                                        # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq PP)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=PP;
+                                                                        # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq IP||$arrytwo_sys_translation[$i][$j] eq CP||$arrytwo_sys_translation[$i][$j] eq PRN||$arrytwo_sys_translation[$i][$j] eq FRAG||$arrytwo_sys_translation[$i][$j] eq INC)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=S;
+                                                                        # # }
+                                                                # # # elsif($arrytwo_sys_translation[$i][$j] eq QP)
+                                                                        # # # {
+                                                                                # # # $arrytwo_sys_translation[$i][$j]=NUMP;
+                                                                        # # # }
+                                                                # # # elsif($arrytwo_sys_translation[$i][$j] eq CONJP)
+                                                                        # # # {
+                                                                                # # # $arrytwo_sys_translation[$i][$j]=CONJP;
+                                                                        # # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq UCP)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=COP;
+                                                                        # # }
+                                                                # # elsif($arrytwo_sys_translation[$i][$j] eq LST||$arrytwo_sys_translation[$i][$j] eq FLR||$arrytwo_sys_translation[$i][$j] eq DFL||$arrytwo_sys_translation[$i][$j] eq INTJ||$arrytwo_sys_translation[$i][$j] eq URL||$arrytwo_sys_translation[$i][$j] eq X)
+                                                                        # # {
+                                                                                # # $arrytwo_sys_translation[$i][$j]=X;
+                                                                        # # }
+                                                                # # # elsif($arrytwo_sys_translation[$i][$j] eq FM||$arrytwo_sys_translation[$i][$j] eq ITJ||$arrytwo_sys_translation[$i][$j] eq TRUNC||$arrytwo_sys_translation[$i][$j] eq XY)
+                                                                        # # # {
+                                                                                # # # $arrytwo_sys_translation[$i][$j]=CCP;
+                                                                        # # # }
+                                                                # # # elsif($arrytwo_sys_translation[$i][$j] eq "\$*LRB*"||$arrytwo_sys_translation[$i][$j] eq "\$("||$arrytwo_sys_translation[$i][$j] eq "\$,"||$arrytwo_sys_translation[$i][$j] eq "\$."||$arrytwo_sys_translation[$i][$j] eq "*T1*"||$arrytwo_sys_translation[$i][$j] eq "*T2*")
+                                                                        # # # {
+                                                                                # # # $arrytwo_sys_translation[$i][$j]= CH;
+                                                                        # # # }
+                                                                                                                                
+                                                                # # else       ##if there appear other tags that are not in the mapping set, then the strange tags will be assigned to the classification of 揦?
+                                                                        # # {
+                                                                            # # ####    $arrytwo_sys_translation[$i][$j]= X;
+                                                                        # # }
+                                                                
+                                                        # # }
+                                        # }        
+                
+                                # for($i=0;$i<$sentence_num;$i++)        #####  print out the changed document to have a check  
+                                        # {
+                                                # for($j=0;$j<$arry_sys_length[$i];$j++)
+                                                        # {
+                                                                # print RESULT "$arrytwo_sys_translation[$i][$j]"," ";
+                                                        # }
+                                                # print RESULT "\n";
+                                        # }
+                                
+                                close RESULT;
+                        }
+        }
